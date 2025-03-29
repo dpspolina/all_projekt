@@ -1,0 +1,370 @@
+import { createPool } from 'mysql2/promise';
+import express, { json } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
+
+
+const app = express();
+app.use(cors());
+app.use(json()); // Для парсинга JSON-тела запросов
+// app.use(cors({
+//   origin: '*',
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   allowedHeaders: 'Content-Type, Authorization'
+// }));
+// Создание пула соединений
+const pool = createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'mydatabase',
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+const connection = await pool.getConnection();
+
+
+// Проверка соединения
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log('Успешное подключение к базе данных!');
+    connection.release();
+  } catch (err) {
+    console.error('Ошибка подключения:', err.message);
+  }
+})();
+
+
+// Выбор роли (эмуляция фронтенда)
+app.post('/select-role', (req, res) => {
+  const { role } = req.body;
+  if (!['student', 'teacher', 'admin'].includes(role)) {
+    return res.status(400).json({ error: 'Неверная роль' });
+  }
+  res.json({ message: 'Роль выбрана', role });
+});
+
+// Вход в систему с учетом роли
+app.post('/login', async (req, res) => {
+  const { role, login, password } = req.body;
+  if (!role || !login || !password) {
+    return res.status(400).json({ error: 'Необходимо указать роль, логин и пароль' });
+  }
+
+  let query = '';
+  let params = [login];
+
+  if (role === 'student') {
+    query = 'SELECT * FROM students WHERE login = ?';
+  } else if (role === 'teacher' || role === 'admin') {
+    query = 'SELECT * FROM teachers WHERE login = ?';
+  } else {
+    return res.status(400).json({ error: 'Неверная роль' });
+  }
+
+  try {
+    const [results] = await connection.execute(query, params);
+    connection.release();
+
+    if (results.length === 0) return res.status(401).json({ error: 'Неверный логин' });
+
+    const user = results[0];
+
+    // Проверка пароля
+    const isPasswordValid = password == user.password;
+    if (!isPasswordValid) return res.status(401).json({ error: 'Неверный пароль' });
+
+    // Проверка роли
+    if ((role === 'admin') && user.status !== role) {
+      return res.status(403).json({ error: 'Недостаточно прав' });
+    }
+
+    console.log(user);
+
+    // // Проверка наличия JWT_SECRET
+    // if (!process.env.JWT_SECRET) {
+    //   return res.status(500).json({ error: 'Ошибка сервера: отсутствует JWT_SECRET' });
+    // }
+
+    // // Генерация токена
+    // const token = jwt.sign({ id: user.id, username: user.username, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Если это ученик, получаем дополнительную информацию
+    res.json({ token: 'token', user: user})
+
+
+  } catch (err) {
+    console.error('Ошибка сервера:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+
+//РУЧКА для вычвечивания олимпиад
+app.get('/get-competitions/student/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+  
+  // // Сначала получаем student_id из таблицы students
+  // const studentQuery = `
+  //     SELECT id
+  //     FROM students 
+  //     WHERE last_name = ? AND first_name = ? AND middle_name = ? AND class_number = ?
+  // `;
+
+  // const studentResult = (await connection.execute(studentQuery, [last_name, first_name, middle_name, userClass])).results;
+
+  // if (studentResult.length === 0) {
+  //     return res.status(404).json({ error: 'Студент не найден' });
+  // }
+
+  // const studentId = studentResult[0].id;
+  
+  // Затем используем student_id для поиска в таблице participation
+  const participationQuery = `
+      SELECT olympiad_name AS name, participation_level AS level, result, diploma_photo AS photos, direction AS direction
+      FROM participation 
+      WHERE student_id = ?
+  `;
+
+  var [ results ] = (await connection.execute(participationQuery, [studentId]));
+  if (results.length == 0) {
+    return res.status(404).json({ error: 'Студент не найден' });
+  }
+  
+  res.json(results.map(function (value) {
+      if (value.photos === null) {
+        value.photos = ['https://dmitrovskiy.mos.ru/upload/medialibrary/ade/d33.jpg']
+      }
+      return value;
+  }));
+});
+
+// РУЧКА для добавления олимпиады
+app.post('/add-competition', (req, res) => {
+  const { last_name, first_name, middle_name, class: userClass } = req.user;
+  const { name, direction, level, result, photos } = req.body;
+
+  const diplomaPhoto = photos.join(',');
+
+  // Сначала добавляем олимпиаду, если её нет
+  const addOlympiadQuery = `
+    INSERT INTO olympiads (olympiad_name)
+    SELECT ? WHERE NOT EXISTS (SELECT 1 FROM olympiads WHERE olympiad_name = ?)
+  `;
+
+  pool.query(addOlympiadQuery, [name, name], (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Ошибка запроса к базе данных при добавлении олимпиады' });
+    }
+
+    // Затем добавляем участие
+    const addParticipationQuery = `
+      INSERT INTO participation (last_name, first_name, middle_name, class, olympiad_name, participation_level, result, diploma_photo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    pool.query(addParticipationQuery, [last_name, first_name, middle_name, userClass, name, direction, level, result, diplomaPhoto], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: 'Ошибка запроса к базе данных при добавлении участия' });
+      }
+      res.json({ success: true });
+    });
+  });
+});
+
+// РУЧКА для редактирования олимпиады
+app.put('/edit-competition/:competitionId', (req, res) => {
+  const { competitionId } = req.params;
+  const { name, direction, level, result, photos } = req.body;
+
+  const query = `
+      UPDATE participation
+      SET olympiad_name = ?, participation_level = ?, result = ?, diploma_photo = ?, direction = ?
+      WHERE id = ? AND last_name = ? AND first_name = ? AND middle_name = ? AND class = ?
+  `;
+  const diplomaPhoto = photos.join(',');
+  const { last_name, first_name, middle_name, class: userClass } = req.user;
+
+  pool.query(query, [name, direction, level, result, diplomaPhoto, competitionId, last_name, first_name, middle_name, userClass], (err, result) => {
+      if (err) {
+          return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      }
+      res.json({ success: true });
+  });
+});
+
+// РУЧКА для удаления олимпиады
+app.delete('/delete-competition/:competitionId', (req, res) => {
+  const { competitionId } = req.params;
+  const { last_name, first_name, middle_name, class: userClass } = req.user;
+
+  const query = `
+      DELETE FROM participation
+      WHERE id = ? AND last_name = ? AND first_name = ? AND middle_name = ? AND class = ?
+  `;
+
+  pool.query(query, [competitionId, last_name, first_name, middle_name, userClass], (err, result) => {
+      if (err) {
+          return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      }
+      res.json({ success: true });
+  });
+});
+
+// РУЧКА для получения всех учеников
+app.get('/students', async (req, res) => {
+  const query = 'SELECT id, last_name, first_name, middle_name, class_number, class_letter FROM students';
+  try {
+    const [results] = await connection.execute(query);
+    res.json(results);
+  }
+  catch (err) {
+    return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+  }
+});
+
+// РУЧКА для получения олимпиад ученика
+app.get('/students/:id/olympiads', async (req, res) => {
+  const studentId = req.params.id;
+  const query = `
+      SELECT olympiad_name AS title, direction, participation_level AS level, result, diploma_photo AS photos 
+      FROM participation 
+      WHERE student_id = ?
+  `;
+  try {
+    const [results] = await connection.execute(query, [studentId]);
+    const olympiads = results.map(olympiad => ({
+        ...olympiad,
+        photos: olympiad.photos ? olympiad.photos.split(',') : []
+    }));
+    res.json(olympiads);
+  }
+  catch (err) {
+    return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+  }
+});
+
+// РУЧКА для получения всех учителей
+app.get('/teachers', (req, res) => {
+  const query = 'SELECT last_name, first_name, middle_name FROM teachers';
+  pool.query(query, (err, results) => {
+      if (err) {
+          return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      }
+      res.json(results);
+  });
+});
+
+// РУЧКА для удаления студента и его олимпиад
+app.delete('/students/:id', (req, res) => {
+  const studentId = req.params.id;
+
+  // Удаление олимпиад студента
+  const deleteParticipationQuery = 'DELETE FROM participation WHERE student_id = ?';
+  pool.query(deleteParticipationQuery, [studentId], (err, result) => {
+      if (err) {
+          return res.status(500).json({ error: 'Не удалось удалить записи участия студента' });
+      }
+
+      // Удаление студента
+      const deleteStudentQuery = 'DELETE FROM students WHERE id = ?';
+      pool.query(deleteStudentQuery, [studentId], (err, result) => {
+          if (err) {
+              return res.status(500).json({ error: 'Не удалось удалить студента' });
+          }
+
+          res.json({ success: true, message: 'Студент и его олимпиады успешно удалены' });
+      });
+  });
+});
+
+// РУЧКА для удаления учителя
+app.delete('/teachers/:id', (req, res) => {
+  const teacherId = req.params.id;
+
+  const deleteTeacherQuery = 'DELETE FROM teachers WHERE id = ?';
+  pool.query(deleteTeacherQuery, [teacherId], (err, result) => {
+      if (err) {
+          return res.status(500).json({ error: 'Не удалось удалить учителя' });
+      }
+
+      res.json({ success: true, message: 'Учитель успешно удалён' });
+  });
+});
+
+// РУЧКА для добавления нового студента
+app.post('/add-students', (req, res) => {
+  const { lastName, firstName, middleName, classNumber, classLetter, tg, login, password } = req.body;
+
+  // Проверка, существует ли уже логин в таблице студентов
+  const checkStudentLoginQuery = 'SELECT login FROM students WHERE login = ?';
+  pool.query(checkStudentLoginQuery, [login], (err, results) => {
+      if (err) {
+          return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      }
+      if (results.length > 0) {
+          return res.status(400).json({ error: 'Логин уже существует' });
+      }
+
+      // // Хеширование пароля перед сохранением в базе данных
+      // bcrypt.hash(password, 10, (err, hashedPassword) => {
+      //     if (err) {
+      //         return res.status(500).json({ error: 'Ошибка хеширования пароля' });
+      //     }
+
+      //     const addStudentQuery = `
+      //         INSERT INTO students (last_name, first_name, middle_name, class_number, class_letter, tg, login, password)
+      //         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      //     `;
+
+      //     pool.query(addStudentQuery, [lastName, firstName, middleName, classNumber, classLetter, tg, login, hashedPassword], (err, result) => {
+      //         if (err) {
+      //             return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      //         }
+
+      //         res.json({ success: true, message: 'Студент успешно добавлен' });
+      //     });
+      // });
+  });
+});
+
+// РУЧКА для добавления нового учителя
+app.post('/add-teachers', (req, res) => {
+  const { lastName, firstName, middleName, login, password } = req.body;
+
+  // Проверка, существует ли уже логин в таблице учителей
+  const checkTeacherLoginQuery = 'SELECT login FROM teachers WHERE login = ?';
+  pool.query(checkTeacherLoginQuery, [login], (err, results) => {
+      if (err) {
+          return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      }
+      if (results.length > 0) {
+          return res.status(400).json({ error: 'Логин уже существует' });
+      }
+
+      // // Хеширование пароля перед сохранением в базе данных
+      // bcrypt.hash(password, 10, (err, hashedPassword) => {
+      //     if (err) {
+      //         return res.status(500).json({ error: 'Ошибка хеширования пароля' });
+      //     }
+
+      //     const addTeacherQuery = `
+      //         INSERT INTO teachers (last_name, first_name, middle_name, login, password)
+      //         VALUES (?, ?, ?, ?, ?)
+      //     `;
+
+      //     pool.query(addTeacherQuery, [lastName, firstName, middleName, login, hashedPassword], (err, result) => {
+      //         if (err) {
+      //             return res.status(500).json({ error: 'Ошибка запроса к базе данных' });
+      //         }
+      //         res.json({ success: true, message: 'Учитель успешно добавлен' });
+      //     });
+      // });
+  });
+});
+
+app.listen(3000, () => console.log('Сервер запущен на порту 3000'));
