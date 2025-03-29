@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список студентов</title>
+    <link rel="stylesheet" href="student_page.css">
+</head>
+<body>
+    <div class="header">
+        <div>
+            <button onclick="window.location.href='administrator_(select_role).html'">Добавить</button>
+            <button onclick="window.location.href='admin_selection.html'">Назад</button>
+        </div>
+        <button onclick="window.location.href='../role_selection.html'">Выход</button>
+    </div>
+
+    <div class="info">
+        <div class="filt__info">
+            <p>Ученики</p>
+        </div>
+        <div class="filters">
+            <div class="dropdown">
+                <button class="class-button" onclick="toggleDropdown()">
+                    Класс (число)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M7 10l5 5 5-5H7z"/>
+                    </svg>
+                </button>
+                <div class="dropdown-content" id="numDropdown">
+                    <label>1 <input type="checkbox" value="1" class="class-checkbox"></label>
+                    <label>2 <input type="checkbox" value="2" class="class-checkbox"></label>
+                    <label>3 <input type="checkbox" value="3" class="class-checkbox"></label>
+                    <label>4 <input type="checkbox" value="4" class="class-checkbox"></label>
+                    <label>5 <input type="checkbox" value="5" class="class-checkbox"></label>
+                    <label>6 <input type="checkbox" value="6" class="class-checkbox"></label>
+                    <label>7 <input type="checkbox" value="7" class="class-checkbox"></label>
+                    <label>8 <input type="checkbox" value="8" class="class-checkbox"></label>
+                    <label>9 <input type="checkbox" value="9" class="class-checkbox"></label>
+                    <label>10 <input type="checkbox" value="10" class="class-checkbox"></label>
+                    <label>11 <input type="checkbox" value="11" class="class-checkbox"></label>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="class-button" onclick="Dropdown()">
+                    Класс (буква)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M7 10l5 5 5-5H7z"/>
+                    </svg>
+                </button>
+                <div class="dropdown-content" id="classDropdown">
+                    <label>А<input type="checkbox" value="А" class="class-checkbox"></label>
+                    <label>Б<input type="checkbox" value="Б" class="class-checkbox"></label>
+                    <label>В<input type="checkbox" value="В" class="class-checkbox"></label>
+                    <label>Г<input type="checkbox" value="Г" class="class-checkbox"></label>
+                    <label>Д<input type="checkbox" value="Д" class="class-checkbox"></label>
+                    <label>Е<input type="checkbox" value="Е" class="class-checkbox"></label>
+                    <label>М<input type="checkbox" value="М" class="class-checkbox"></label>
+                    <label>К<input type="checkbox" value="К" class="class-checkbox"></label>
+                    <label>Ы<input type="checkbox" value="Ы" class="class-checkbox"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-list" id="userList">
+    </div>
+
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <a href="#" class="back-arrow" onclick="closeDeleteModal()">&#8592;</a>
+            <h2>Вы собираетесь удалить ученика. Вы уверены?</h2>
+            <button id="confirmDelete">Удалить</button>
+        </div>
+    </div>
+
+    <script>
+        const userList = document.getElementById('userList');
+        const checkboxes = document.querySelectorAll('.class-checkbox');
+        const classDropdown = document.getElementById('classDropdown');
+        const numDropdown = document.getElementById('numDropdown');
+        
+        function toggleDropdown() {
+            numDropdown.style.display = numDropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function Dropdown() {
+            classDropdown.style.display = classDropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        const students = [];
+
+        function fetchStudents() {
+            fetch(`${API_URL}/students`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                students.length = 0;
+                students.push(...data);
+                renderStudents();
+            })
+            .catch(error => console.error('Ошибка получения данных:', error));
+        }
+
+        function renderStudents() {
+            const selectedClasses = Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            userList.innerHTML = '';
+
+            const filteredStudents = selectedClasses.length
+                ? students.filter(student => selectedClasses.includes(student.classNumber) || selectedClasses.includes(student.classLetter))
+                : students;
+
+            if (filteredStudents.length) {
+                filteredStudents.forEach((student, index) => {
+                    const { lastName, firstName, middleName, classNumber, classLetter } = student;
+
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <span>${firstName} ${lastName} ${middleName} ${classNumber} ${classLetter}</span>
+                        <button onclick="event.stopPropagation(); removeStudent(${student.id})">&times;</button>
+                    `;
+                    userItem.addEventListener('click', () => redirectToEditPage(student));
+                    userList.appendChild(userItem);
+                });
+            } else {
+                userList.innerHTML = '<div>Нет студентов для отображения</div>';
+            }
+        }
+
+        function removeStudent(studentId) {
+            fetch(`${API_URL}/students/${studentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    fetchStudents();
+                } else {
+                    console.error('Ошибка удаления студента');
+                }
+            })
+            .catch(error => console.error('Ошибка запроса на удаление:', error));
+        }
+
+        function redirectToEditPage(student) {
+            localStorage.setItem('editingStudent', JSON.stringify(student));
+            window.location.href = 'edit_student.html';
+        }
+
+        fetchStudents();
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', renderStudents);
+        });
+    </script>
+</body>
+</html>

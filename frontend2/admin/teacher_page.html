@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список учителей</title>
+    <link rel="stylesheet" href="teacher_page.css">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <button onclick="window.location.href='administrator_(select_role).html'">Добавить</button>
+            <button onclick="window.location.href='admin_selection.html'">Назад</button>
+        </div>
+        <button onclick="window.location.href='../role_selection.html'">Выход</button>
+    </div>
+
+    <div class="teacher">
+        <h3 class="teacher-title">Учителя</h3>
+    </div>
+
+    <div class="user-list container" id="userList">
+    </div>
+
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <a href="#" class="back-arrow" onclick="closeDeleteModal()">&#8592;</a>
+            <h2>Вы собираетесь удалить учителя. Вы уверены?</h2>
+            <button class="confirmDelete">Удалить</button>
+        </div>
+    </div>
+
+    <script>
+        const userList = document.getElementById('userList');
+        const modal = document.getElementById('deleteModal');
+        const confirmDelete = document.querySelector('.confirmDelete');
+
+        const teachers = [];
+
+        function fetchTeachers() {
+            fetch(`${API_URL}/teachers`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                teachers.length = 0;
+                teachers.push(...data);
+                renderTeachers();
+            })
+            .catch(error => console.error('Ошибка получения данных:', error));
+        }
+
+        function renderTeachers() {
+            userList.innerHTML = '';
+
+            if (teachers.length) {
+                teachers.forEach((teacher, index) => {
+                    const { lastName, firstName, middleName } = teacher;
+
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <span>${firstName} ${lastName} ${middleName}</span>
+                        <button onclick="event.stopPropagation(); confirmRemoveTeacher(${index})" class="crossDel">&times;</button>
+                    `;
+                    userList.appendChild(userItem);
+                });
+            } else {
+                userList.innerHTML = '<div>Нет учителей для отображения</div>';
+            }
+        }
+
+        function confirmRemoveTeacher(index) {
+            modal.style.display = 'flex';
+            confirmDelete.onclick = () => removeTeacher(index);
+        }
+
+        function removeTeacher(index) {
+            const teacherId = teachers[index].id;
+
+            fetch(`${API_URL}/teachers/${teacherId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    teachers.splice(index, 1);
+                    renderTeachers();
+                    modal.style.display = 'none';
+                } else {
+                    console.error('Ошибка удаления учителя');
+                }
+            })
+            .catch(error => console.error('Ошибка запроса на удаление:', error));
+        }
+
+        fetchTeachers();
+    </script>
+</body>
+</html>

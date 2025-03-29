@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление учителя</title>
+    <link rel="stylesheet" href="administrator_(add_teacher).css">
+</head>
+<body>
+    <a href="administrator_(select_role).html" class="back-arrow" onclick="goBack()">&#8592;</a>
+    <div class="container">
+        <h1>Добавление учителя</h1>
+        <form id="addUserForm">
+            <input type="text" id="lastName" class="input-field" name="lastName" placeholder="Фамилия" required />
+            <input type="text" id="firstName" class="input-field" name="firstName" placeholder="Имя" required />
+            <input type="text" id="middleName" class="input-field" name="middleName" placeholder="Отчество" required />
+            <input type="text" id="login" class="input-field" name="login" placeholder="Логин" required />
+            <input type="password" id="password" class="input-field" name="password" placeholder="Пароль" required />
+            <button type="button" id="createBtn" class="button">Создать</button>
+        </form>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        const inputs = document.querySelectorAll('.input-field');
+        const createBtn = document.getElementById('createBtn');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+                createBtn.disabled = !allFilled;
+
+                if (allFilled) {
+                    createBtn.classList.add('active');
+                } else {
+                    createBtn.classList.remove('active');
+                }
+            });
+        });
+
+        createBtn.addEventListener('click', () => {
+            const lastName = document.getElementById('lastName').value;
+            const firstName = document.getElementById('firstName').value;
+            const middleName = document.getElementById('middleName').value;
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+
+            const requestBody = { lastName, firstName, middleName, login, password };
+
+            fetch(`${API_URL}/add-teachers`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    window.location.href = 'teacher_page.html';
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+            })
+            .catch(error => alert('Ошибка запроса: ' + error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Указываем кодировку документа как UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- Устанавливаем масштабирование для правильного отображения на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы -->
+    <title>Добавление</title>
+    <!-- Подключаем файл стилей -->
+    <link rel="stylesheet" href="admin_selection.css">
+</head>
+<body>
+    <!-- Шапка с кнопками "Добавить" и "Выход" -->
+    <div class="header">
+        <!-- Кнопка для перехода на страницу выбора роли администратора -->
+        <button onclick="window.location.href='administrator_(select_role).html'">Добавить</button>
+        <!-- Кнопка для выхода из аккаунта и перехода на страницу выбора роли -->
+        <button onclick="window.location.href='../role_selection.html'">Выход</button>
+    </div>
+
+    <!-- Модальное окно подтверждения выхода из аккаунта -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <!-- Ссылка для возврата назад и закрытия модального окна -->
+            <a href="javascript:history.back()" class="back-arrow" onclick="closeModal()">&#8592;</a>
+            <h2>Вы собираетесь выйти из аккаунта. Вы уверены?</h2>
+            <!-- Кнопка для подтверждения выхода и перехода на страницу выбора роли -->
+            <button onclick="window.location.href='role_selection.html'">Выйти</button>
+        </div>
+    </div>
+
+    <!-- Контейнер для выбора списка для просмотра -->
+    <div class="selection">
+        <h2 class="selection__title">Выберите, какой список вы хотите посмотреть</h2>
+        <div class="selection__btn">
+            <!-- Кнопка для перехода на страницу списка учителей -->
+            <div class="selection__btn__item"><a href="teacher_page.html">Учителей</a></div>
+            <!-- Кнопка для перехода на страницу списка учеников -->
+            <div class="selection__btn__item"><a href="student_page.html">Учеников</a></div>
+        </div>
+    </div>
+
+    <!-- Подключаем файл скрипта -->
+    <script src="admin/admin_selection.js"></script>
+</body>
+</html>

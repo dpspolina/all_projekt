@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление ученика</title>
+    <link rel="stylesheet" href="administrator_(add_a_student).css">
+</head>
+<body>
+    <a href="administrator_(select_role).html" class="back-arrow" onclick="goBack()">&#8592;</a>
+    <div class="container">
+        <h1>Добавление ученика</h1>
+        <form id="addUserForm">
+            <input type="text" id="lastName" class="input-field" name="lastName" placeholder="Фамилия" required />
+            <input type="text" id="firstName" class="input-field" name="firstName" placeholder="Имя" required />
+            <input type="text" id="middleName" class="input-field" name="middleName" placeholder="Отчество" required />
+            <div class="select-wrapper">
+                <select id="classNumber" class="select-field" required>
+                    <option value="" disabled selected>класс (число)</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                </select>
+                <select id="classLetter" class="select-field" required>
+                    <option value="" disabled selected>класс (буква)</option>
+                    <option value="А">А</option>
+                    <option value="Б">Б</option>
+                    <option value="В">В</option>
+                    <option value="Г">Г</option>
+                    <option value="Д">Д</option>
+                    <option value="Е">Е</option>
+                    <option value="М">М</option>
+                    <option value="К">К</option>
+                    <option value="Ы">Ы</option>
+                </select>
+            </div>
+            <input type="text" id="telegram" class="input-field" name="telegram" placeholder="@telegram" required />
+            <input type="date" id="date_of_birth" class="input-field" name="date_of_birth" placeholder="Дата рождения" required />
+            <input type="text" id="login" class="input-field" name="login" placeholder="Логин" required />
+            <input type="password" id="password" class="input-field" name="password" placeholder="Пароль" required />
+            <button type="button" id="createBtn" class="button">Добавить</button>
+        </form>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        const inputs = document.querySelectorAll('.input-field, .select-field');
+        const createBtn = document.getElementById('createBtn');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+                createBtn.disabled = !allFilled;
+
+                if (allFilled) {
+                    createBtn.classList.add('active');
+                } else {
+                    createBtn.classList.remove('active');
+                }
+            });
+        });
+
+        createBtn.addEventListener('click', () => {
+            const lastName = document.getElementById('lastName').value;
+            const firstName = document.getElementById('firstName').value;
+            const middleName = document.getElementById('middleName').value;
+            const classNumber = document.getElementById('classNumber').value;
+            const classLetter = document.getElementById('classLetter').value;
+            const telegram = document.getElementById('telegram').value;
+            const dateOfBirth = document.getElementById('date_of_birth').value;
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+
+            const requestBody = { lastName, firstName, middleName, classNumber, classLetter, telegram, dateOfBirth, login, password };
+
+            fetch(`${API_URL}/add-students`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    window.location.href = 'student_page.html';
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+            })
+            .catch(error => alert('Ошибка запроса: ' + error));
+        });
+    </script>
+</body>
+</html>

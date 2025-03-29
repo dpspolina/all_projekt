@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Устанавливаем кодировку страницы как UTF-8, чтобы поддерживать русский язык -->
+    <meta charset="UTF-8">
+    <!-- Устанавливаем параметр для адаптивности страницы на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы, который отображается на вкладке браузера -->
+    <title>Выберите роль</title>
+    <link rel="stylesheet" href="administrator_(select_role).css">
+</head>
+<body>
+    <!-- Стрелка назад, при нажатии выполняется функция goBack() -->
+    <a href="admin_selection.html" class="back-arrow" onclick="goBack()">&#8592;</a>
+    
+    <!-- Контейнер для основного содержимого -->
+    <div class="container">
+        <!-- Заголовок страницы -->
+        <h1>Выберите роль</h1>
+        
+        <!-- Контейнер для кнопок выбора роли -->
+        <div class="roles">
+            <!-- Кнопка для роли "Учитель". При клике будет перенаправление на страницу учителя -->
+            <button class="role-button" onclick="window.location.href='administrator_(add_teacher).html'">Учитель</button>
+            <!-- Кнопка для роли "Ученик". При клике будет перенаправление на страницу ученика -->
+            <button class="role-button" onclick="window.location.href='administrator_(add_a_student).html'">Ученик</button>
+        </div>
+    </div>
+
+    <!-- Скрипт для функции "Назад" -->
+    <script>
+        // Функция goBack() возвращает пользователя на предыдущую страницу
+        function goBack() {
+            window.history.back(); // Возврат на предыдущую страницу в истории
+        }
+    </script>
+</body>
+</html>
