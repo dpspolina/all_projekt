@@ -1,0 +1,97 @@
+            /* Сбрасываем стандартные отступы и границы */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            /* Стили для body (фона и центрирования содержимого) */
+            body {
+                font-family: Arial, sans-serif; /* Используемый шрифт */
+                background-color: #F4EFFF; /* Цвет фона */
+                background-image: url(img/Vector2.svg); /* Фоновое изображение */
+                background-repeat: no-repeat; /* Изображение не повторяется */
+                background-size: cover; /* Изображение растягивается на весь экран */
+                background-position: center; /* Центрируем изображение */
+                display: flex; /* Делаем flex-контейнером для выравнивания */
+                justify-content: center; /* Выравниваем по горизонтали */
+                align-items: center; /* Выравниваем по вертикали */
+                height: 100vh; /* Высота равна 100% высоты экрана */
+            }
+
+            /* Основной контейнер страницы */
+            .container {
+                text-align: center; /* Центрируем текст */
+            }
+
+            /* Заголовок h1 */
+            h1 {
+                font-size: 24px; /* Размер шрифта */
+                margin-bottom: 20px; /* Отступ снизу */
+                color: #111; /* Цвет текста */
+            }
+
+            /* Параграф p */
+            p {
+                font-size: 16px; /* Размер шрифта */
+                margin-bottom: 20px; /* Отступ снизу */
+                color: #111; /* Цвет текста */
+            }
+
+            /* Контейнер для кнопок выбора ролей */
+            .roles {
+                display: flex; /* Используем flexbox */
+                flex-direction: column; /* Располагаем элементы вертикально */
+                gap: 20px; /* Расстояние между элементами */
+                align-items: center; /* Центрируем элементы */
+                width: 100%; /* Полная ширина */
+                max-width: 400px; /* Максимальная ширина */
+            }
+
+            /* Контейнер для верхних кнопок */
+            .roles-top {
+                display: flex; /* Используем flexbox */
+                gap: 20px; /* Расстояние между кнопками */
+                width: 100%; /* Полная ширина */
+            }
+
+            /* Общий стиль кнопок */
+            .role-link, .role-link1 {
+                display: block; /* Превращаем в блочный элемент */
+                background-color: #fff; /* Белый фон */
+                text-decoration: none; /* Убираем подчеркивание */
+                text-align: center; /* Центрируем текст */
+                font-size: 18px; /* Размер шрифта */
+                border-radius: 12px; /* Закругляем углы */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень */
+                cursor: pointer; /* Курсор в виде указателя */
+                transition: transform 0.2s, box-shadow 0.2s; /* Анимация наведения */
+                color: #333; /* Цвет текста */
+            }
+
+            /* Отдельные стили для кнопки "Учитель" (более широкая) */
+            .role-link1 {
+                padding: 20px 50px; /* Увеличенные отступы внутри */
+            }
+
+            /* Отдельные стили для кнопки "Администратор" (более узкая) */
+            .role-link {
+                padding: 20px 20px; /* Отступы внутри */
+            }
+
+            /* Эффекты наведения для кнопок */
+            .role-link:hover, .role-link1:hover {
+                transform: translateY(-2px); /* Немного поднимаем при наведении */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Увеличиваем тень */
+            }
+
+            /* Эффект нажатия на кнопку */
+            .role-link:active, .role-link1:active {
+                transform: translateY(0); /* Возвращаем в исходное положение */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Возвращаем обычную тень */
+            }
+
+            /* Кнопка "Ученик" занимает всю ширину */
+            .role-link.full-width, .role-link1.full-width {
+                width: 100%;
+            }

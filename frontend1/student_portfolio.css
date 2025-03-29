@@ -1,0 +1,541 @@
+        /* Сбрасываем стандартные отступы и добавляем настройки для всех элементов */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; /* Это помогает избежать проблем с размерами элементов */
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Устанавливаем шрифт для всего тела страницы */
+            background-image: url(../img/Vector2.svg); /* Устанавливаем фоновое изображение */
+            background-color: #f4efff; /* Цвет фона */
+            padding: 20px; /* Отступы вокруг контента */
+            display: flex; /* Используем flexbox для выравнивания элементов */
+            flex-direction: column; /* Располагаем элементы вертикально */
+            align-items: center; /* Центрируем элементы по горизонтали */
+            overflow-x: visible;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between; /* Разделяем кнопки на противоположные стороны */
+            width: 80%; /* Устанавливаем ширину блока */
+            margin-bottom: 20px; /* Отступ снизу */
+        }
+        /* Стиль для кнопок в шапке */
+        .header button {
+            background: none;
+            border: 1px solid #65558f;
+            color: #65558f;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Эффект при наведении на кнопку */
+        .header button:hover {
+            background-color: #57497a;
+            color: #fff;
+        }
+
+
+        /* Фильтры */
+        .filters {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 5px;
+        }
+
+        .class-button{
+            flex: 1; /* Каждый элемент будет занимать одинаковую ширину */
+            padding: 15px;
+            font-size: 16px;
+            color: rgba(101, 85, 143, 1);
+            background-color: rgba(255, 255, 255, 1);
+            border: 2px solid rgba(101, 85, 143, 1);
+            border-radius: 40px; /* Округляем углы кнопки */
+            cursor: pointer;
+            text-align: center;            
+            display: flex;
+            align-items: center; /* Центрируем содержимое кнопки */
+            justify-content: center;
+        }
+
+        .filters button:hover {
+            background-color: #e0e0f8; /* Цвет фона при наведении */
+        }
+
+        /* Стрелка вниз в кнопках фильтров */
+        .filters button svg {
+            width: 16px;
+            height: 16px;
+            fill: #6c63ff;
+            position: absolute;
+            right: 20px; /* Отступ от правой стороны */
+        }
+        .filt__info{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(101, 85, 143, 1);
+            background-color: rgba(255, 255, 255, 1);
+            border: 2px solid rgba(101, 85, 143, 1);
+            border-radius: 100px;
+            font-size: 20px;
+            width: 540px;
+            height: 50px;
+        }
+        .info{
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+        .dropdown {
+            display: flex;
+            position: relative; /* Относительное позиционирование для правильного размещения выпадающего меню */
+            flex: 1;
+        }
+
+        /* Кнопка для выбора класса */
+        .dropdown button {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            color: rgba(101, 85, 143, 1);
+            background-color: rgba(255, 255, 255, 1);
+            border: 2px solid rgba(101, 85, 143, 1);
+            border-radius: 40px;    
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .dropdown button:hover {
+            background-color: #e0e0f8; /* Цвет фона при наведении */
+        }
+
+        .dropdown button svg {
+            width: 16px;
+            height: 16px;
+            fill: #6c63ff;
+            position: absolute;
+            right: 20px;
+        }
+
+        /* Скрытый выпадающий список классов */
+        .dropdown-content {
+            display: none; /* Изначально скрываем */
+            position: absolute;
+            top: 55px;
+            left: 0;
+            background-color: white;
+            border: 1px solid #8e8eb9;
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 10; /* Ставим на передний план */
+            width: 100%
+        }
+
+        .dropdown-content label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .dropdown-content input[type="checkbox"] {
+            margin-left: 10px; /* Отступ для чекбоксов */
+        }
+
+        /* Список студентов */
+        .user-list {
+            width: 80%;
+            display: grid;
+            grid-template-columns: repeat(1, 1fr); /* Делаем два столбца для студентов */
+            gap: 10px;
+        }
+
+        /* Стиль для элемента списка студента */
+        .user-item {
+            background-color: #fff;
+            border-radius: 16px; /* Округляем углы */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Добавляем тень для красоты */
+            cursor: pointer;
+        }
+
+        .user-item:hover {
+            background-color: #f0f0f0; /* Изменяем фон при наведении */
+        }
+
+        /* Стиль для текста студента */
+        .user-item span {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Кнопка для удаления студента */
+        .user-item button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .user-item button:hover {
+            background-color: #d3d3d3; /* Цвет фона кнопки при наведении */
+        }
+
+        /* Дополнительное оформление кнопки Учитель */
+        .teacher-button {
+            margin-left: -250px;
+        }
+
+        /* Дополнительное оформление выпадающего списка */
+        /* .dropdown {
+            margin-right: -250px;
+        } */
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+
+
+        
+        .modal-content {
+            background: none; 
+            text-align: center;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background: white;
+            color: #4b4b4b;
+            font-size: 14px;
+        }
+
+        .modal-content button:hover {
+            background: #dcdcdc;
+        }
+
+
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-arrow:hover {
+            color: #dcdcdc;
+        }
+
+        .select-field {
+            display: block;
+            width: 30%;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: rgba(101, 85, 143, 1);
+            background-color: rgba(255, 255, 255, 1);
+            border: 2px solid rgba(101, 85, 143, 1);
+            border-radius: 50px;
+            appearance: none; /* Убираем стандартное оформление браузера */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238e8eb9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center; /* Размещаем стрелку справа */
+            background-size: 10px;
+        }
+
+        
+        /* Стиль для контейнера заголовка с кнопками */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        /* Стиль для кнопок в шапке */
+        .header-container button {
+            background: none;
+            border: 1px solid #65558f;
+            color: #65558f;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Эффект при наведении на кнопку */
+        .header-container button:hover {
+            background-color: #57497a;
+            color: #fff;
+        }
+
+        /* Стиль для блока с именем пользователя */
+        .fio-container {
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+        }
+
+        /* Стиль для аватара пользователя */
+        .fio-container .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #e4d7ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        /* Стиль для изображения в аватаре */
+        .fio-container .avatar img {
+            width: 60%;
+            height: 60%;
+        }
+
+        /* Стиль для имени пользователя */
+        .fio-container .name {
+            font-size: 16px;
+            color: #65558f;
+        }
+
+        /* Стиль для контейнера с олимпиадами */
+        .container {
+            margin-bottom: 20px;
+        }
+
+
+
+        /* Стиль для блока с полями олимпиады */
+        .fields {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Стиль для каждого поля в олимпиаде */
+        .field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            font-size: 16px;
+        }
+
+        /* Стиль для контейнера с фотографиями */
+        .photo-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Стиль для каждой фотографии */
+        .photo-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+        
+
+        /* Стиль для изображения в фото */
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Стиль для блока с действиями (кнопками редактировать и удалить) */
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Стиль для иконки действия */
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Стиль для изображения внутри кнопки действия */
+        .action-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        .close-btn{
+            border: none;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            border-radius: 100px;
+            background-color: rgba(255, 255, 255, 1);
+            position: absolute;
+            left: 100px;
+            top: 50px;
+        }
+        .background__image{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+
+        .background__olymp{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;      
+        }
+        .new{
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            left: 610px;
+            top: 100px;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+        
+        .modal-content {
+            background: none; /* Убираем фон под текстом */
+            text-align: center;
+            width: 90%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: white;
+        }
+        
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background: white;
+            color: #4b4b4b;
+            font-size: 14px;
+        }
+        
+        .modal-content button:hover {
+            background: #dcdcdc;
+        }
+        
+        .back-arrow {
+            position: absolute;
+            z-index: 3;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .back-arrow:hover {
+            color: #dcdcdc;
+        }
+
+
+
+        .OlympPlace{
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 70%;
+            overflow-y: auto;
+            margin: 80px 200px 0 200px;
+        }

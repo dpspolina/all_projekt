@@ -1,0 +1,218 @@
+<!DOCTYPE html> <!-- Определяем тип документа как HTML5 -->
+<html lang="ru"> <!-- Устанавливаем язык документа как русский -->
+<head>
+    <meta charset="UTF-8"> <!-- Устанавливаем кодировку документа как UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Устанавливаем масштабирование страницы для корректного отображения на мобильных устройствах -->
+    <title>Вход</title> <!-- Заголовок страницы -->
+    <link rel="stylesheet" href="login_account.css"> <!-- Подключаем файл стилей -->
+</head>
+<body>
+    <!-- Кнопки "назад" -->
+    <a href="javascript:history.back()" class="back-arrow">&#8592;</a> <!-- Кнопка для возврата на предыдущую страницу -->
+    <a href="role_selection.html" class="back-arrow">&#8592;</a> <!-- Кнопка для перехода на страницу выбора роли -->
+    
+    <!-- Контейнер с формой входа -->
+    <div class="container">
+        <h1>Вход</h1> <!-- Заголовок формы входа -->
+        <!-- Форма выбора роли -->
+        <form id="roleForm">
+            <select id="role" class="select-field"> <!-- Выпадающее меню для выбора роли -->
+                <option value="" disabled selected>Роль</option> <!-- Вариант по умолчанию -->
+                <option value="student">Ученик</option> <!-- Вариант "Ученик" -->
+                <option value="teacher">Учитель</option> <!-- Вариант "Учитель" -->
+                <option value="admin">Администратор</option> <!-- Вариант "Администратор" -->
+            </select>
+        </form>
+        <!-- Форма входа -->
+        <form id="loginForm">          
+            <input type="text" id="login" class="input-field" placeholder="Логин" required> <!-- Поле ввода логина -->
+            <input type="password" id="password" class="input-field" placeholder="Пароль" required> <!-- Поле ввода пароля -->
+            <p id="errorMessage" class="error-message" style="display: none;">Неправильно введены данные</p> <!-- Сообщение об ошибке -->
+            <button type="submit" class="button" id="submitButton" disabled>Войти</button> <!-- Кнопка отправки формы, изначально отключена -->
+        </form>
+    </div>
+    
+    <script>
+         const API_URL = "https://aptly-undoubted-cricket.cloudpub.ru"; // Это не менять
+        // Получаем элементы формы
+        const roleOption = document.getElementById('role'); // Получаем элемент выбора роли
+        const loginInput = document.getElementById('login'); // Получаем элемент ввода логина
+        const passwordInput = document.getElementById('password'); // Получаем элемент ввода пароля
+        const submitButton = document.getElementById('submitButton'); // Получаем элемент кнопки отправки формы
+        const errorMessage = document.getElementById('errorMessage'); // Получаем элемент сообщения об ошибке
+
+        // // Указываем правильные данные для входа
+        // const validCredentials = [
+        //     {
+        //         role: "student", // Указываем роль "Ученик"
+        //         login: "1", // Логин для роли "Ученик"
+        //         password: "1" // Пароль для роли "Ученик"
+        //     },
+        //     {
+        //         role: "teacher", // Указываем роль "Учитель"
+        //         login: "2", // Логин для роли "Учитель"
+        //         password: "2" // Пароль для роли "Учитель"
+        //     },
+        //     {
+        //         role: "admin", // Указываем роль "Администратор"
+        //         login: "3", // Логин для роли "Администратор"
+        //         password: "3" // Пароль для роли "Администратор"
+        //     }
+        // ];
+
+        // Функция проверки введённых данных
+        function updateButtonState() {
+            if (roleOption.value.trim() && loginInput.value.trim() && passwordInput.value.trim()) {
+                submitButton.disabled = false; // Разблокируем кнопку, если все поля заполнены
+                submitButton.classList.add('active'); // Добавляем активный класс кнопке
+            } else {
+                submitButton.disabled = true; // Блокируем кнопку, если какое-либо поле пустое
+                submitButton.classList.remove('active'); // Удаляем активный класс кнопке
+            }
+            errorMessage.style.display = 'none'; // Скрываем сообщение об ошибке
+        }
+
+        // Обработчик отправки формы
+        // document.getElementById('loginForm').addEventListener('submit', (event) => {
+        //     event.preventDefault(); // Предотвращаем стандартное поведение формы
+
+        //     const login = loginInput.value.trim(); // Получаем значение логина
+        //     const password = passwordInput.value.trim(); // Получаем значение пароля
+
+        //     console.log(2);
+
+        //     validCredentials.forEach(element => {
+        //         // Проверяем введённые данные
+        //         if (roleOption.value === element.role && login === element.login && password === element.password && element.role === "student") {
+        //             window.location.href = 'watch_Olympiad.html'; // Перенаправляем на страницу просмотра олимпиад
+        //         } else if (roleOption.value === element.role && login === element.login && password === element.password && element.role === "teacher") {
+        //             window.location.href = 'student_portfolio.html'; // Перенаправляем на страницу портфолио студента
+        //         } else if (roleOption.value === element.role && login === element.login && password === element.password && element.role === "admin") {
+        //             window.location.href = 'admin/admin_selection.html'; // Перенаправляем на страницу выбора администратора
+        //         } else {
+        //             // errorMessage.style.display = 'block'; // Показываем сообщение об ошибке
+        //             submitButton.disabled = true; // Блокируем кнопку
+        //             submitButton.classList.remove('active'); // Удаляем активный класс кнопке
+        //         }
+        //     });
+        // });
+
+        // Добавляем обработчики ввода для полей
+        loginInput.addEventListener('input', updateButtonState); // Обработчик ввода логина
+        passwordInput.addEventListener('input', updateButtonState); // Обработчик ввода пароля
+        roleOption.addEventListener('change', updateButtonState); // Обработчик изменения выбора роли
+
+
+
+        //     // Вход
+        // document.getElementById("loginForm").addEventListener("submit", function(event) {
+        // event.preventDefault(); // Отмена перезагрузки страницы
+        // const login = document.getElementById("login").value; // Получаем значение логина
+        // const password = document.getElementById("password").value; // Получаем значение пароля
+        // const role = document.getElementById("role").value; // Получаем выбранную роль из формы
+
+        // // Формируем данные для отправки
+        // let requestBody = { login, password };
+        // if (role === 'admin') {
+        //     requestBody.role = 'admin'; // Добавляем роль для администратора
+        // } else if(role === 'student') {
+        //     requestBody.role = 'student';
+        // } else {
+        //     requestBody.role = 'teacher';
+        // }
+
+    //     fetch(`${API_URL}/login`, {
+    //         method: "POST", // Метод запроса
+    //         headers: { "Content-Type": "application/json" }, // Заголовки запроса
+    //         body: JSON.stringify(requestBody) // Тело запроса
+    //     })
+    //     .then(response => response.json()) // Обрабатываем ответ
+    //     .then(data => {
+    //         if (data.token) {
+    //             // alert("Успешный вход!"); // Выводим сообщение об успешном входе
+    //             localStorage.setItem("token", data.token); // Сохраняем токен в локальное хранилище
+                
+    //             if (role === 'student') {
+    //                 localStorage.setItem("name", `${data.studentInfo.first_name} ${data.studentInfo.last_name} ${data.studentInfo.class_number} ${data.studentInfo.class_letter}`); // Сохраняем имя пользователя в локальное хранилище
+    //             } else {
+    //                 localStorage.setItem("name", data.userInfo.name); // Сохраняем имя пользователя в локальное хранилище для других ролей
+    //             }
+                
+    //             // Перенаправляем на разные страницы в зависимости от роли
+    //             switch (role) {
+    //                 case 'student':
+    //                     window.location.href = "/watch_Olympiad.html"; // Перенаправляем на страницу просмотра олимпиад
+    //                     break;
+    //                 case 'teacher':
+    //                     window.location.href = "/student_portfolio.html"; // Перенаправляем на страницу портфолио студентов
+    //                     break;
+    //                 case 'admin':
+    //                     window.location.href = "/admin_selection.html"; // Перенаправляем на страницу администрирования
+    //                     break;
+    //                 default:
+    //                     alert("Неизвестная роль: " + role); // Показываем сообщение об ошибке, если роль неизвестна
+    //             }
+    //         } else {
+    //             alert("Ошибка: " + data.error); // Показываем сообщение об ошибке
+    //         }
+    //     })
+    //     .catch(error => alert("Ошибка запроса: " + error)); // Обрабатываем ошибки запроса
+    // });
+
+// Вход
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Отмена перезагрузки страницы
+    const login = document.getElementById("login").value; // Получаем значение логина
+    const password = document.getElementById("password").value; // Получаем значение пароля
+    const role = document.getElementById("role").value; // Получаем выбранную роль из формы
+
+    // Формируем данные для отправки
+    let requestBody = { login, password, role };
+
+    console.log(1);
+
+    fetch(`${API_URL}/login`, {
+        method: "POST", // Метод запроса
+        headers: { "Content-Type": "application/json" }, // Заголовки запроса
+        body: JSON.stringify(requestBody) // Тело запроса
+    })
+    .then(response => response.json()) // Обрабатываем ответ
+    .then(data => {
+        if (data.token) {
+            localStorage.setItem("token", data.token); // Сохраняем токен в локальное хранилище
+            
+            console.log({
+                data: data
+            })
+
+            name = `${data.user.first_name} ${data.user.last_name}`
+            if (role == 'student') {
+                name += ` ${data.user.class_number} ${data.user.class_letter}`
+            }
+            localStorage.setItem("name", name); // Сохраняем имя пользователя в локальное хранилище
+            localStorage.setItem("user", JSON.stringify(data.user))
+            
+            // Перенаправляем на разные страницы в зависимости от роли
+            switch (role) {
+                case 'student':
+                    window.location.href = "/watch_Olympiad.html"; // Перенаправляем на страницу просмотра олимпиад
+                    break;
+                case 'teacher':
+                    window.location.href = "/student_portfolio.html"; // Перенаправляем на страницу портфолио студентов
+                    break;
+                case 'admin':
+                    window.location.href = "/admin_selection.html"; // Перенаправляем на страницу администрирования
+                    break;
+                default:
+                    alert("Неизвестная роль: " + role); // Показываем сообщение об ошибке, если роль неизвестна
+            }
+        } else {
+            alert("Ошибка: " + data.error); // Показываем сообщение об ошибке
+        }
+    })
+    // .catch(error => alert("Ошибка запроса: " + error)); // Обрабатываем ошибки запроса
+});
+
+    </script>
+</body>
+</html>

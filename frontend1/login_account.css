@@ -1,0 +1,116 @@
+   /* Сбрасываем отступы и границы у всех элементов */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Стили для body - задаём фон, шрифт и центрируем контент */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url(img/Vector1.svg); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #F4EFFF;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Контейнер для формы входа */
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовок */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #111;
+}
+
+/* Стили для полей ввода */
+.input-field {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+/* Кнопка входа (изначально отключена) */
+.active{
+    cursor: pointer !important;
+}
+/* Изменение цвета кнопки при наведении */
+.active:hover {
+    background-color: #7c7ca4 !important;
+}
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    text-align: center;
+    background-color: #a29bb8;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: not-allowed;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+
+/* Сообщение об ошибке (изначально скрыто) */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: none;
+    text-align: left;
+}
+
+/* Кнопка назад */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: #8e8eb9;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-arrow:hover {
+    color: #6e6e8f;
+}
+
+
+    /* Стили для выпадающих списков */
+    .select-field {
+        display: block; /* Отображение как блок */
+        width: 100%; /* Ширина на 100% от контейнера */
+        padding: 15px; /* Отступ внутри поля */
+        margin-bottom: 15px; /* Отступ снизу */
+        font-size: 16px; /* Размер шрифта */
+        border: 1px solid #ddd; /* Рамка вокруг поля */
+        border-radius: 8px; /* Скругление углов поля */
+        background-color: #fff; /* Белый фон */
+        appearance: none; /* Убираем стандартный стиль выпадающего списка */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238e8eb9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>'); /* Стиль стрелки выпадающего списка */
+        background-repeat: no-repeat; /* Не повторять фон */
+        background-position: right 10px center; /* Позиция стрелки */
+        background-size: 10px; /* Размер стрелки */
+    }

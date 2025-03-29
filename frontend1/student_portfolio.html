@@ -1,0 +1,379 @@
+<!DOCTYPE html> <!-- Определение типа документа как HTML5 -->
+<html lang="ru"> <!-- Установка языка страницы как русский -->
+<head>
+    <meta charset="UTF-8"> <!-- Установка кодировки страницы как UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Установка масштаба страницы для мобильных устройств -->
+    <title>Список студентов</title> <!-- Заголовок страницы -->
+    <link rel="stylesheet" href="student_portfolio.css"> <!-- Подключение файла стилей -->
+</head>
+<body>
+    <div class="header"> <!-- Шапка страницы -->
+        <button onclick="openLogoutModal()">Выход</button> <!-- Кнопка выхода -->
+    </div>
+
+    <div class="info"> <!-- Информационный блок -->
+        <div class="filters"> <!-- Блок фильтров -->
+            <div class="dropdown"> <!-- Выпадающее меню -->
+                <button class="class-button" onclick="toggleDropdown('numDropdown')"> <!-- Кнопка для открытия меню -->
+                    Класс (число)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <!-- Иконка стрелки -->
+                        <path d="M7 10l5 5 5-5H7z"/> <!-- Путь для иконки стрелки -->
+                    </svg>
+                </button>
+                <div class="dropdown-content" id="numDropdown"> <!-- Содержимое выпадающего меню -->
+                    <label>1 <input type="checkbox" value="1" class="class-checkbox"></label> <!-- Чекбокс для класса 1 -->
+                    <label>2 <input type="checkbox" value="2" class="class-checkbox"></label> <!-- Чекбокс для класса 2 -->
+                    <label>3 <input type="checkbox" value="3" class="class-checkbox"></label> <!-- Чекбокс для класса 3 -->
+                    <label>4 <input type="checkbox" value="4" class="class-checkbox"></label> <!-- Чекбокс для класса 4 -->
+                    <label>5 <input type="checkbox" value="5" class="class-checkbox"></label> <!-- Чекбокс для класса 5 -->
+                    <label>6 <input type="checkbox" value="6" class="class-checkbox"></label> <!-- Чекбокс для класса 6 -->
+                    <label>7 <input type="checkbox" value="7" class="class-checkbox"></label> <!-- Чекбокс для класса 7 -->
+                    <label>8 <input type="checkbox" value="8" class="class-checkbox"></label> <!-- Чекбокс для класса 8 -->
+                    <label>9 <input type="checkbox" value="9" class="class-checkbox"></label> <!-- Чекбокс для класса 9 -->
+                    <label>10 <input type="checkbox" value="10" class="class-checkbox"></label> <!-- Чекбокс для класса 10 -->
+                    <label>11 <input type="checkbox" value="11" class="class-checkbox"></label> <!-- Чекбокс для класса 11 -->
+                </div>
+            </div>
+            <div class="dropdown"> <!-- Второе выпадающее меню -->
+                <button class="class-button" onclick="toggleDropdown('classDropdown')"> <!-- Кнопка для открытия меню -->
+                    Класс (буква)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <!-- Иконка стрелки -->
+                        <path d="M7 10l5 5 5-5H7z"/> <!-- Путь для иконки стрелки -->
+                    </svg>
+                </button>
+                <div class="dropdown-content" id="classDropdown"> <!-- Содержимое выпадающего меню -->
+                    <label>А<input type="checkbox" value="А" class="class-checkbox"></label> <!-- Чекбокс для класса А -->
+                    <label>Б<input type="checkbox" value="Б" class="class-checkbox"></label> <!-- Чекбокс для класса Б -->
+                    <label>В<input type="checkbox" value="В" class="class-checkbox"></label> <!-- Чекбокс для класса В -->
+                    <label>Г<input type="checkbox" value="Г" class="class-checkbox"></label> <!-- Чекбокс для класса Г -->
+                    <label>Д<input type="checkbox" value="Д" class="class-checkbox"></label> <!-- Чекбокс для класса Д -->
+                    <label>Е<input type="checkbox" value="Е" class="class-checkbox"></label> <!-- Чекбокс для класса Е -->
+                    <label>М<input type="checkbox" value="М" class="class-checkbox"></label> <!-- Чекбокс для класса М -->
+                    <label>К<input type="checkbox" value="К" class="class-checkbox"></label> <!-- Чекбокс для класса К -->
+                    <label>Ы<input type="checkbox" value="Ы" class="class-checkbox"></label> <!-- Чекбокс для класса Ы -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-list" id="userList"> <!-- Список студентов -->
+        <!-- Здесь будут отображаться студенты -->
+    </div>
+
+    <div class="modal" id="logoutModal"> <!-- Модальное окно для подтверждения выхода -->
+        <div class="modal-content">
+            <a href="javascript:history.back()" class="back-arrow" onclick="closeModal()">&#8592;</a> <!-- Кнопка для закрытия модального окна -->
+            <h2>Вы собираетесь выйти из аккаунта. Вы уверены?</h2> <!-- Текст подтверждения -->
+            <button onclick="window.location.href='role_selection.html'">Выйти</button> <!-- Кнопка для выхода -->
+        </div>
+    </div>
+
+    <div class="background__image"> <!-- Фон для просмотра изображений -->
+        <button class="close-btn"><img src="img/icon.svg" alt=""></button> <!-- Кнопка для закрытия изображения -->
+        <div id="olympiadsContainer" class="OlympPlace"></div> <!-- Контейнер для олимпиады -->
+    </div>
+    <script>
+        const userList = document.getElementById('userList'); // Получаем элемент списка студентов
+        const checkboxes = document.querySelectorAll('.class-checkbox'); // Получаем все элементы чекбоксов
+        const classDropdown = document.getElementById('classDropdown'); // Получаем элемент выпадающего меню для букв классов
+        const numDropdown = document.getElementById('numDropdown'); // Получаем элемент выпадающего меню для чисел классов
+        const olympiadsContainer = document.getElementById('olympiadsContainer'); // Получаем элемент контейнера для олимпиады
+        const olympiads = JSON.parse(localStorage.getItem('olympiads')) || []; // Получаем список олимпиад из локального хранилища или создаем пустой массив
+        const close_btn = document.querySelector(".close-btn"); // Получаем элемент кнопки закрытия
+        const API_URL = "https://aptly-undoubted-cricket.cloudpub.ru"; // Замените на ваш URL API
+
+
+        // Функция для открытия и закрытия выпадающих меню
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id); // Получаем элемент выпадающего меню по его ID
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block'; // Переключаем отображение меню
+        }
+
+        // Пример данных студентов
+        const students = JSON.parse(localStorage.getItem('apprentice')) || [
+            { lastName: "Иванов", firstName: "Иван", middleName: "Иванович", classNumber: "1", classLetter: 'А', level: "Всероссийский заочный", direction: "Астрономия"},
+            { lastName: "Петров", firstName: "Петр", middleName: "Петрович", classNumber: "1", classLetter: 'А', level: "Международный очный", direction: "Геология"},
+            { lastName: "Сидоров", firstName: "Сидор", middleName: "Сидорович", classNumber: "1", classLetter: 'А', level: "Региональный заочный", direction: "Иностранный язык"},
+            { lastName: "Волкова", firstName: "Мария", middleName: "Алексеевна", classNumber: "1", classLetter: 'А', level: "Школьный очный", direction: "Спорт"},
+        ];
+
+        // Функция для отображения списка студентов
+        function renderStudents() {
+            const selectedClasses = Array.from(checkboxes) // Создаем массив из выбранных чекбоксов
+                .filter(checkbox => checkbox.checked) // Фильтруем только отмеченные чекбоксы
+                .map(checkbox => checkbox.value); // Получаем значения отмеченных чекбоксов
+
+            userList.innerHTML = ''; // Очищаем текущий список студентов
+
+            const filteredStudents = selectedClasses.length // Фильтруем студентов по выбранным классам
+                ? students.filter(student => selectedClasses.includes(student.classNumber) || selectedClasses.includes(student.classLetter) || selectedClasses.includes(student.level) || selectedClasses.includes(student.direction))
+                : students; // Если классы выбраны, фильтруем, иначе показываем всех студентов
+
+            if (filteredStudents.length) { // Проверяем, есть ли студенты для отображения
+                filteredStudents.forEach((student, index) => {
+                    const lastName = student.lastName || ''; // Получаем фамилию студента
+                    const firstName = student.firstName || ''; // Получаем имя студента
+                    const middleName = student.middleName || ''; // Получаем отчество студента
+                    const classNumber = student.classNumber || ''; // Получаем номер класса студента
+                    const classLetter = student.classLetter || ''; // Получаем букву класса студента
+
+                    const userItem = document.createElement('div'); // Создаем элемент для студента
+                    userItem.className = 'user-item'; // Добавляем класс элементу
+                    userItem.innerHTML = `
+                        <span>${firstName} ${lastName} ${middleName} ${classNumber}${classLetter}</span>`; // Заполняем элемент данными студента
+                    userList.appendChild(userItem); // Добавляем элемент в список студентов
+                });
+
+                addUserItemClickListeners(); // Добавляем обработчики кликов на элементы студентов
+            } else {
+                userList.innerHTML = '<div>Нет учеников для отображения</div>'; // Сообщение, если нет студентов для отображения
+            }
+        }
+
+        // Функция для добавления обработчиков кликов на элементы студентов
+        function addUserItemClickListeners() {
+            const userItems = document.querySelectorAll('.user-item'); // Получаем все элементы студентов
+            userItems.forEach((element, index) => {
+                element.addEventListener('click', () => { // Добавляем обработчик клика
+                    const student = students[index]; // Получаем данные студента
+                    const studentOlympiads = olympiads.filter(olympiad => olympiad.studentId === student.id); // Фильтруем олимпиады студента
+
+                    olympiadsContainer.innerHTML = ''; // Очищаем контейнер для олимпиады
+                    studentOlympiads.forEach(olympiad => { // Проходимся по олимпиадам студента
+                        const container = document.createElement('div'); // Создаем контейнер для олимпиады
+                        container.classList.add('container'); // Добавляем класс контейнеру
+
+                        const fields = document.createElement('div'); // Создаем блок для полей олимпиады
+                        fields.classList.add('fields'); // Добавляем класс блоку
+
+                        fields.innerHTML = `
+                            <div class="field"><span>Название:</span><span>${olympiad.title}</span></div> <!-- Название олимпиады -->
+                            <div class="field"><span>Направление:</span><span>${olympiad.direction}</span></div> <!-- Направление олимпиады -->
+                            <div class="field"><span>Уровень участия:</span><span>${olympiad.level}</span></div> <!-- Уровень участия -->
+                            <div class="field"><span>Результат участия:</span><span>${olympiad.participation}</span></div> <!-- Результат участия -->
+                        `;
+
+                        const photoContainer = document.createElement('div'); // Создаем контейнер для фотографий
+                        photoContainer.classList.add('photo-container'); // Добавляем класс контейнеру
+
+                        olympiad.photos.forEach(photo => { // Проходимся по фотографиям олимпиады
+                            const photoItem = document.createElement('div'); // Создаем элемент для фото
+                            photoItem.classList.add('photo-item'); // Добавляем класс элементу
+
+                            const img = document.createElement('img'); // Создаем элемент изображения
+                            img.src = photo; // Устанавливаем источник изображения
+
+                            photoItem.appendChild(img); // Добавляем изображение в элемент
+                            photoContainer.appendChild(photoItem); // Добавляем элемент в контейнер фотографий
+                        });
+                        
+                        const actions = document.createElement('div'); // Создаем блок для действий
+                        
+                        container.appendChild(fields); // Добавляем блок полей в контейнер
+                        container.appendChild(photoContainer); // Добавляем контейнер фотографий в контейнер
+                        container.appendChild(actions); // Добавляем блок действий в контейнер
+
+                        olympiadsContainer.appendChild(container); // Добавляем контейнер олимпиады в контейнер для олимпиады
+
+                        const photoItems = document.querySelectorAll(".photo-item"); // Получаем все элементы фотографий
+
+                        photoItems.forEach((el) => {
+                            el.addEventListener("click", () => { // Добавляем обработчик клика на элемент фотографии
+                                const img = el.querySelector("img").cloneNode(true); // Клонируем изображение
+                                img.style.maxWidth = "90vw"; // Устанавливаем максимальную ширину для изображения
+                                img.style.maxHeight = "90vh"; // Устанавливаем максимальную высоту для изображения
+                                img.style.objectFit = "contain"; // Устанавливаем свойство object-fit
+
+                                olympiadsContainer.innerHTML = ''; // Очищаем контейнер для олимпиады
+                                olympiadsContainer.appendChild(img); // Добавляем изображение в контейнер
+
+                                document.querySelector('.background__image').style.display = "flex"; // Показываем фон для изображения
+                                document.querySelector('.background__image').style.justifyContent = "center"; // Устанавливаем выравнивание по центру
+                                document.querySelector('.background__image').style.alignItems = "center"; // Устанавливаем выравнивание по центру
+                                document.querySelector('.background__image').style.position = "fixed"; // Устанавливаем позиционирование
+                            });
+                        });
+                    });
+
+                    document.querySelector('.background__image').style.display = 'block'; // Показываем фон для изображения
+                });
+            });
+        }
+
+        // Функция для открытия модального окна выхода
+        function openLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        // Функция для закрытия модального окна
+        function closeModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        // Функция для закрытия модального окна удаления
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Функция для выхода из аккаунта
+        function logout() {
+            localStorage.removeItem('currentUser'); // Удаляем текущего пользователя из локального хранилища
+            window.location.href = 'role_selection.html'; // Перенаправляем на страницу выбора роли
+        }
+
+        renderStudents(); // Отображаем список студентов
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', renderStudents); // Добавляем обработчики изменения чекбоксов
+        });
+
+        close_btn.addEventListener('click', () => {
+            document.querySelector('.background__image').style.display = 'none'; // Закрываем фон для изображения
+            olympiadsContainer.innerHTML = ''; // Очищаем контейнер для олимпиады
+        });
+
+
+
+
+        // Функция для открытия и закрытия выпадающих меню
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id); // Получаем элемент выпадающего меню по его ID
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block'; // Переключаем отображение меню
+        }
+
+        // Функция для отображения списка студентов
+        function renderStudents() {
+            const url = `${API_URL}/students`;
+            console.log({url: url, api_url: API_URL})
+            fetch(url)
+                .then(response => response.json())
+                .then(students => {
+                    const selectedClasses = Array.from(checkboxes) // Создаем массив из выбранных чекбоксов
+                        .filter(checkbox => checkbox.checked) // Фильтруем только отмеченные чекбоксы
+                        .map(checkbox => checkbox.value); // Получаем значения отмеченных чекбоксов
+
+                    userList.innerHTML = ''; // Очищаем текущий список студентов
+
+                    const filteredStudents = selectedClasses.length // Фильтруем студентов по выбранным классам
+                        ? students.filter(student => selectedClasses.includes(student.classNumber) || selectedClasses.includes(student.classLetter))
+                        : students; // Если классы выбраны, фильтруем, иначе показываем всех студентов
+
+                    if (filteredStudents.length) { // Проверяем, есть ли студенты для отображения
+                        filteredStudents.forEach((student, index) => {
+                            const lastName = student.last_name || ''; // Получаем фамилию студента
+                            const firstName = student.first_name || ''; // Получаем имя студента
+                            const middleName = student.middle_name || ''; // Получаем отчество студента
+                            const classNumber = student.class_number || ''; // Получаем номер класса студента
+                            const classLetter = student.class_letter || ''; // Получаем букву класса студента
+
+                            const userItem = document.createElement('div'); // Создаем элемент для студента
+                            userItem.className = 'user-item'; // Добавляем класс элементу
+                            userItem.innerHTML = `
+                                <span> ${lastName} ${firstName} ${middleName} ${classNumber}${classLetter}</span>`; // Заполняем элемент данными студента
+                            userItem.addEventListener('click', () => showStudentOlympiads(student.id)); // Добавляем обработчик клика для отображения олимпиад
+                            userList.appendChild(userItem); // Добавляем элемент в список студентов
+                        });
+                    } else {
+                        userList.innerHTML = '<div>Нет учеников для отображения</div>'; // Сообщение, если нет студентов для отображения
+                    }
+                })
+        }
+
+        // Функция для отображения олимпиад выбранного студента
+        function showStudentOlympiads(studentId) {
+            fetch(`${API_URL}/students/${studentId}/olympiads`)
+                .then(response => response.json())
+                .then(olympiads => {
+                    olympiadsContainer.innerHTML = ''; // Очищаем контейнер для олимпиады
+                    olympiads.forEach(olympiad => { // Проходимся по олимпиадам студента
+                        const container = document.createElement('div'); // Создаем контейнер для олимпиады
+                        container.classList.add('container'); // Добавляем класс контейнеру
+
+                        const fields = document.createElement('div'); // Создаем блок для полей олимпиады
+                        fields.classList.add('fields'); // Добавляем класс блоку
+
+                        fields.innerHTML = `
+                            <div class="field"><span>Название:</span><span>${olympiad.title}</span></div> <!-- Название олимпиады -->
+                            <div class="field"><span>Направление:</span><span>${olympiad.direction}</span></div> <!-- Направление олимпиады -->
+                            <div class="field"><span>Уровень участия:</span><span>${olympiad.level}</span></div> <!-- Уровень участия -->
+                            <div class="field"><span>Результат участия:</span><span>${olympiad.result}</span></div> <!-- Результат участия -->
+                        `;
+
+                        const photoContainer = document.createElement('div'); // Создаем контейнер для фотографий
+                        photoContainer.classList.add('photo-container'); // Добавляем класс контейнеру
+
+                        olympiad.photos.forEach(photo => { // Проходимся по фотографиям олимпиады
+                            const photoItem = document.createElement('div'); // Создаем элемент для фото
+                            photoItem.classList.add('photo-item'); // Добавляем класс элементу
+
+                            const img = document.createElement('img'); // Создаем элемент изображения
+                            img.src = photo; // Устанавливаем источник изображения
+
+                            photoItem.appendChild(img); // Добавляем изображение в элемент
+                            photoContainer.appendChild(photoItem); // Добавляем элемент в контейнер фотографий
+                        });
+
+                        container.appendChild(fields); // Добавляем блок полей в контейнер
+                        container.appendChild(photoContainer); // Добавляем контейнер фотографий в контейнер
+
+                        olympiadsContainer.appendChild(container); // Добавляем контейнер олимпиады в контейнер для олимпиады
+
+                        const photoItems = document.querySelectorAll(".photo-item"); // Получаем все элементы фотографий
+
+                        photoItems.forEach((el) => {
+                            el.addEventListener("click", () => { // Добавляем обработчик клика на элемент фотографии
+                                const img = el.querySelector("img").cloneNode(true); // Клонируем изображение
+                                img.style.maxWidth = "90vw"; // Устанавливаем максимальную ширину для изображения
+                                img.style.maxHeight = "90vh"; // Устанавливаем максимальную высоту для изображения
+                                img.style.objectFit = "contain"; // Устанавливаем свойство object-fit
+
+                                olympiadsContainer.innerHTML = ''; // Очищаем контейнер для олимпиады
+                                olympiadsContainer.appendChild(img); // Добавляем изображение в контейнер
+
+                                document.querySelector('.background__image').style.display = "flex"; // Показываем фон для изображения
+                                document.querySelector('.background__image').style.justifyContent = "center"; // Устанавливаем выравнивание по центру
+                                document.querySelector('.background__image').style.alignItems = "center"; // Устанавливаем выравнивание по центру
+                                document.querySelector('.background__image').style.position = "fixed"; // Устанавливаем позиционирование
+                            });
+                        });
+                    });
+
+                    document.querySelector('.background__image').style.display = 'block'; // Показываем фон для изображения
+                })
+                // .catch(error => console.error('Ошибка при загрузке данных:', error)); // Обрабатываем ошибки запроса
+        }
+
+        // Функция для открытия модального окна выхода
+        function openLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        // Функция для закрытия модального окна
+        function closeModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        // Функция для закрытия модального окна удаления
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Функция для выхода из аккаунта
+        function logout() {
+            localStorage.removeItem('currentUser'); // Удаляем текущего пользователя из локального хранилища
+            window.location.href = 'role_selection.html'; // Перенаправляем на страницу выбора роли
+        }
+
+        renderStudents(); // Отображаем список студентов
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', renderStudents); // Добавляем обработчики изменения чекбоксов
+        });
+
+        close_btn.addEventListener('click', () => {
+            document.querySelector('.background__image').style.display = 'none'; // Закрываем фон для изображения
+            olympiadsContainer.innerHTML = ''; // Очищаем контейнер для олимпиады
+        });
+    </script>
+</body>
+</html>

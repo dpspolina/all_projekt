@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр олимпиад</title>
+    <link rel="stylesheet" href="watch_Olympiad.css">
+</head>
+<body>
+    <!-- Контейнер с кнопками (Добавить и Выход) -->
+    <div class="header-container">
+        <button onclick="window.location.href='add_Olympiad.html'">Добавить</button>
+        <button id="logoutButton">Выход</button>
+    </div>
+
+    <!-- Блок с аватаром и именем пользователя -->
+    <div class="fio-container">
+        <div class="avatar">
+            <img src="img/аватар.svg" alt="Avatar">
+        </div>
+        <div class="name" id="userName">Мария Волкова 1Б</div>
+    </div>
+
+    <!-- Контейнер для вывода списка олимпиад -->
+    <div id="olympiadsContainer"></div>
+    
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <a href="javascript:history.back()" class="back-arrow" onclick="closeModal()">&#8592;</a>
+            <h2>Вы собираетесь выйти из аккаунта. Вы уверены?</h2>
+            <button onclick="window.location.href='role_selection.html'">Выйти</button>
+        </div>
+    </div>
+
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <a href="#" class="back-arrow" onclick="closeDeleteModal()">&#8592;</a>
+            <h2>Вы собираетесь удалить олимпиаду. Вы уверены?</h2>
+            <button id="confirmDelete">Удалить</button>
+        </div>
+    </div>
+
+    <div class="background__image">
+        <button class="close-btn"><img src="img/icon.svg" alt=""></button>
+        <div class="image-place"></div>
+    </div>
+
+    <script>
+        
+        
+
+
+        const API_URL = "https://aptly-undoubted-cricket.cloudpub.ru"; // Это не менять
+
+
+        // Function to display all competitions
+        function fetchCompetitions() {
+            const user = JSON.parse(localStorage.getItem("user"))
+            console.log(user);
+            fetch(`${API_URL}/get-competitions/student/${user.ID}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log({data: data});
+                // const olympiadsContainer = document.getElementById("olympiadsContainer");
+                // if (data.competitions && data.competitions.length > 0) {
+                //     data.competitions.forEach(competition => {
+                //         const competitionElement = document.createElement("div");
+                //         competitionElement.className = "competition-item";
+                //         competitionElement.innerHTML = `
+                //             <h3>${competition.name}</h3>
+                //             <p>Направление: ${competition.direction}</p>
+                //             <p>Уровень: ${competition.level}</p>
+                //             <p>Результат: ${competition.result}</p>
+                //             <div class="photo-container">
+                //                 ${competition.photos.map(photo => `<img src="${photo}" alt="Фото">`).join('')}
+                //             </div>
+                //         `;
+                //         olympiadsContainer.appendChild(competitionElement);
+                //     });
+                // } else {
+                //     olympiadsContainer.innerHTML = '<p style="text-align: center;"> Олимпиады отсутствуют </p>';
+                // }
+                localStorage.setItem('olympiads', JSON.stringify(data))
+            })
+            // .catch(error => alert("Ошибка при загрузке данных: " + error));
+        }
+
+
+
+
+
+        // Function to delete a competition
+        function deleteCompetition(competitionId) {
+            fetch(`${API_URL}/delete-competition/${competitionId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Олимпиада удалена успешно!");
+                    location.reload();
+                } else {
+                    alert("Ошибка при удалении олимпиады: " + data.error);
+                }
+            })
+            // .catch(error => alert("Ошибка при удалении олимпиады: " + error));
+        }
+
+        // Example usage for delete button
+        document.getElementById('confirmDelete').onclick = () => {
+            const competitionId = olympiads[deleteIndex].id;
+            deleteCompetition(competitionId);
+        };
+
+
+
+
+
+        // // Function to add a competition
+        // function addCompetition(competition) {
+        //     fetch(`${API_URL}/add-competition`, {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             "Authorization": `Bearer ${localStorage.getItem("token")}`
+        //         },
+        //         body: JSON.stringify(competition)
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             alert("Олимпиада добавлена успешно!");
+        //             location.reload();
+        //         } else {
+        //             alert("Ошибка при добавлении олимпиады: " + data.error);
+        //         }
+        //     })
+        //     .catch(error => alert("Ошибка при добавлении олимпиады: " + error));
+        // }
+
+        // // Example usage for adding a new competition
+        // const newCompetition = {
+        //     name: "New Olympiad",
+        //     direction: "Math",
+        //     level: "Regional",
+        //     result: "Winner",
+        //     photos: ["photo1.jpg", "photo2.jpg"]
+        // };
+        // addCompetition(newCompetition);
+
+
+
+
+
+        // Function to edit a competition
+        function editCompetition(competitionId, updatedCompetition) {
+            fetch(`${API_URL}/edit-competition/${competitionId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify(updatedCompetition)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Олимпиада обновлена успешно!");
+                    location.reload();
+                } else {
+                    alert("Ошибка при обновлении олимпиады: " + data.error);
+                }
+            })
+            // .catch(error => alert("Ошибка при обновлении олимпиады: " + error));
+        }
+
+        // Example usage for editing a competition
+        const updatedCompetition = {
+            name: "Updated Olympiad",
+            direction: "Physics",
+            level: "National",
+            result: "Participant",
+            photos: ["photo3.jpg", "photo4.jpg"]
+        };
+        // editCompetition(competitionId, updatedCompetition);
+
+        // Initial fetch of competitions
+        fetchCompetitions();
+
+    </script>
+    <script src="watch_Olympiad.js"></script>
+</body>
+</html>

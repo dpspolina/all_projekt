@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Устанавливаем кодировку страницы и описание для адаптивности на разных устройствах -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление олимпиады</title>
+    <link rel="stylesheet" href="add_olymp.css">
+</head>
+<body>
+    <!-- Кнопка возврата назад, при клике выполняется переход на предыдущую страницу -->
+    <button class="back-button" onclick="window.location.href='watch_Olympiad.html'" >&#8592;</button>
+
+    <div class="container">
+        <!-- Заголовок формы -->
+        <h1>Добавление олимпиады</h1>
+        
+        <!-- Поле ввода для названия олимпиады -->
+        <input type="text" id="title" class="select" placeholder="Название">
+        
+        <!-- Выпадающий список для выбора направления олимпиады -->
+        <select id="direction" class="select-field">
+            <option value="" disabled selected>Направление</option>
+            <!-- Список возможных направлений -->
+            <option value="Астрономия">Астрономия</option>
+            <option value="Биология">Биология</option>
+            <option value="Генетика">Генетика</option>
+            <option value="География">География</option>
+            <option value="Геология">Геология</option>
+            <option value="Гум и соц. науки">Гум. и соц. науки</option>
+            <option value="Дизайн">Дизайн</option>
+            <option value="Естественные науки">Естественные науки</option>
+            <option value="Журналистика">Журналистика</option>
+            <option value="Инженерное дело">Инженерное дело</option>
+            <option value="Иностранный язык">Иностранный язык</option>
+            <option value="Информатика">Информатика</option>
+            <option value="Искусственный интеллект">Искусственный интеллект</option>
+            <option value="История">История</option>
+            <option value="Лингвистика">Лингвистика</option>
+            <option value="Литература">Литература</option>
+            <option value="Математика">Математика</option>
+            <option value="Международные отношения">Международные отношения</option>
+            <option value="Музыка">Музыка</option>
+            <option value="Право">Право</option>
+            <option value="Психология">Психология</option>
+            <option value="Робототехника">Робототехника</option>
+            <option value="Спорт">Спорт</option>
+            <option value="Творчество">Творчество</option>
+            <option value="Теория и история музыки">Теория и история музыки</option>
+            <option value="Физика">Физика</option>
+            <option value="Философия">Философия</option>
+            <option value="Финансовая грамотность">Финансовая грамотность</option>
+            <option value="Химия">Химия</option>
+            <option value="Экономика">Экономика</option>
+        </select>
+        
+        <!-- Выпадающий список для выбора уровня участия -->
+        <select id="Participation-level" class="select-field">
+            <option value="" disabled selected>Уровень участия</option>
+            <option value="Всероссийский заочный">Всероссийский заочный</option>
+            <option value="Всероссийский очный">Всероссийский очный</option>
+            <option value="Международный заочный">Международный заочный</option>
+            <option value="Международный очный">Международный очный</option>
+            <option value="Окружной заочный">Окружной заочный</option>
+            <option value="Окружной очный">Окружной очный</option>
+            <option value="Регионалный заочный">Регионалный заочный</option>
+            <option value="Региональный очный">Региональный очный</option>
+            <option value="Школьный заочный">Школьный заочный</option>
+            <option value="Школьный очный">Школьный очный</option>
+        </select>
+        
+        <!-- Выпадающий список для выбора результата участия -->
+        <select id="Result-of-participation" class="select-field">
+            <option value="" disabled selected>Результат участия</option>
+            <option value="Диплом I степени">Диплом I степени</option>
+            <option value="Диплом II степени">Диплом II степени</option>
+            <option value="Диплом III степени">Диплом III степени</option>
+            <option value="Лауреат І степени">Лауреат І степени</option>
+            <option value="Лауреат II степени">Лауреат II степени</option>
+            <option value="Лауреат III степени">Лауреат III степени</option>
+            <option value="Участник">Участник</option>
+            <option value="Победитель">Победитель</option>
+            <option value="Призер">Призер</option>
+        </select>
+        
+        <!-- Раздел для загрузки фотографий -->
+        <div class="photo-section">
+            <div class="photo-label">Добавьте фото</div>
+            <div class="photo-container" id="photoPreview">
+                <!-- Блок для загрузки фотографий, кликабельный, чтобы вызвать диалог выбора файла -->
+                <div class="upload-box" id="uploadBox" onclick="document.getElementById('photo').click();">
+                    <!-- Поле выбора файлов (невидимое) -->
+                    <input type="file" id="photo" accept="image/*" style="display: none;" multiple>
+                    <p>Добавить фото</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка для отправки формы -->
+        <button class="submit" id="submit" disabled>Добавить</button>
+    </div>
+
+    <script src="add_olymp.js"></script>
+</body>
+

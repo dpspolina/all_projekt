@@ -1,0 +1,160 @@
+       /* Основные стили для body */
+       body {
+        font-family: Arial, sans-serif; /* Шрифт страницы */
+        background-image: url(img/vector.svg); /* Фоновое изображение */
+        background-color: #f4efff; /* Цвет фона */
+        margin: 0; /* Убираем отступы */
+        display: flex; /* Выравнивание контента по центру */
+        justify-content: center; /* Горизонтальное выравнивание по центру */
+        align-items: center; /* Вертикальное выравнивание по центру */
+        height: 100vh; /* Высота 100% от высоты окна браузера */
+    }
+
+    /* Стили для контейнера, в котором содержится форма */
+    .container {
+        width: 400px; /* Ширина контейнера */
+        background: #fff; /* Белый фон */
+        padding: 30px; /* Отступы внутри контейнера */
+        border-radius: 15px; /* Скругление углов */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Тень для эффекта глубины */
+        text-align: center; /* Выравнивание текста по центру */
+    }
+
+    /* Стили для заголовка */
+    h1 {
+        font-size: 20px; /* Размер шрифта */
+        color: #333; /* Цвет текста */
+        margin-bottom: 20px; /* Отступ снизу */
+    }
+
+    /* Стили для поля ввода текста с id="title" */
+    #title {
+        display: block; /* Отображаем как блок */
+        width: 369px; /* Ширина поля */
+        padding: 15px; /* Отступ внутри поля */
+        margin-bottom: 15px; /* Отступ снизу */
+        font-size: 16px; /* Размер шрифта */
+        border: 1px solid #ddd; /* Рамка вокруг поля */
+        border-radius: 8px; /* Скругление углов поля */
+        background-color: #fff; /* Белый фон */
+    }
+
+    /* Стили для выпадающих списков */
+    .select-field {
+        display: block; /* Отображение как блок */
+        width: 100%; /* Ширина на 100% от контейнера */
+        padding: 15px; /* Отступ внутри поля */
+        margin-bottom: 15px; /* Отступ снизу */
+        font-size: 16px; /* Размер шрифта */
+        border: 1px solid #ddd; /* Рамка вокруг поля */
+        border-radius: 8px; /* Скругление углов поля */
+        background-color: #fff; /* Белый фон */
+        appearance: none; /* Убираем стандартный стиль выпадающего списка */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238e8eb9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>'); /* Стиль стрелки выпадающего списка */
+        background-repeat: no-repeat; /* Не повторять фон */
+        background-position: right 10px center; /* Позиция стрелки */
+        background-size: 10px; /* Размер стрелки */
+    }
+
+    /* Стили для секции с фото */
+    .photo-section {
+        margin-bottom: 20px; /* Отступ снизу */
+    }
+
+    /* Стили для метки фотографии */
+    .photo-label {
+        font-size: 16px; /* Размер шрифта */
+        margin-bottom: 10px; /* Отступ снизу */
+        color: #333; /* Цвет текста */
+    }
+
+    /* Контейнер для фотографий */
+    .photo-container {
+        display: flex; /* Используем флексбокс */
+        flex-wrap: wrap; /* Перенос элементов на новую строку */
+        gap: 10px; /* Промежуток между фотографиями */
+        justify-content: center; /* Выравнивание фотографий по центру */
+    }
+
+    /* Стили для отдельной фотографии */
+    .photo-item {
+        width: 80px; /* Ширина фотографии */
+        height: 80px; /* Высота фотографии */
+        border-radius: 10px; /* Скругление углов */
+        border: 1px solid #ccc; /* Рамка вокруг фотографии */
+        overflow: hidden; /* Обрезать содержимое, если оно выходит за пределы */
+        position: relative; /* Для абсолютного позиционирования кнопки удаления */
+        background-color: #fafafa; /* Цвет фона */
+    }
+
+    /* Стили для изображения внутри фотографии */
+    .photo-item img {
+        width: 100%; /* Ширина изображения на 100% от размера элемента */
+        height: 100%; /* Высота изображения на 100% от размера элемента */
+        object-fit: cover; /* Изображение не искажено, оно обрезается по размеру */
+    }
+
+    /* Кнопка удаления фотографии */
+    .photo-item button {
+        position: absolute; /* Абсолютное позиционирование кнопки */
+        top: 5px; /* Отступ сверху */
+        right: 5px; /* Отступ справа */
+        width: 20px; /* Ширина кнопки */
+        height: 20px; /* Высота кнопки */
+        border: none; /* Без рамки */
+        background: red; /* Красный фон */
+        color: #fff; /* Белый цвет текста */
+        border-radius: 50%; /* Круглая форма кнопки */
+        font-size: 12px; /* Размер шрифта */
+        cursor: pointer; /* Указатель курсора на кнопку */
+    }
+
+    /* Стили для контейнера для загрузки фото */
+    .upload-box {
+        width: 80px; /* Ширина контейнера */
+        height: 80px; /* Высота контейнера */
+        border: 2px dashed #ccc; /* Пунктирная рамка */
+        border-radius: 10px; /* Скругление углов */
+        display: flex; /* Используем флексбокс */
+        justify-content: center; /* Выравнивание по центру */
+        align-items: center; /* Выравнивание по вертикали */
+        font-size: 12px; /* Размер шрифта */
+        color: #999; /* Цвет текста */
+        cursor: pointer; /* Указатель курсора на контейнер */
+        background-color: #fafafa; /* Цвет фона */
+    }
+
+    /* Стили для кнопки отправки формы */
+    button.submit {
+        width: 100%; /* Ширина кнопки 100% */
+        padding: 12px; /* Отступы внутри кнопки */
+        background: #65558f; /* Цвет фона кнопки */
+        color: #fff; /* Цвет текста на кнопке */
+        border: none; /* Без рамки */
+        border-radius: 8px; /* Скругление углов */
+        font-size: 16px; /* Размер шрифта */
+        cursor: pointer; /* Указатель курсора на кнопку */
+        transition: 0.3s; /* Плавный переход при наведении */
+    }
+
+    /* Стили для кнопки отправки, когда она отключена */
+    button.submit:disabled {
+        background: #ccc; /* Цвет фона, когда кнопка отключена */
+        cursor: not-allowed; /* Курсор не доступен */
+    }
+            /* Кнопка назад */
+            .back-button {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                font-size: 24px;
+                color: #65558f;
+                cursor: pointer;
+                background: none;
+                border: none;
+            }
+    
+            .back-button:hover {
+                color: #57497a;
+            }
+

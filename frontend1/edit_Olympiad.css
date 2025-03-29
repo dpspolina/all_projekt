@@ -1,0 +1,160 @@
+        /* Основные стили для страницы */
+        body {
+            font-family: Arial, sans-serif; /* Шрифт текста */
+            background-image: url(img/vector.svg); /* Фоновое изображение */
+            background-color: #f4efff; /* Цвет фона */
+            margin: 0; /* Убираем отступы */
+            display: flex; /* Используем flexbox для центрирования */
+            justify-content: center; /* Выравниваем по центру по горизонтали */
+            align-items: center; /* Выравниваем по центру по вертикали */
+            height: 100vh; /* Высота экрана */
+        }
+
+        /* Контейнер для формы */
+        .container {
+            width: 400px;
+            background: #fff; /* Белый фон */
+            padding: 30px; /* Отступы внутри контейнера */
+            border-radius: 15px; /* Скругление углов */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+            text-align: center; /* Центрирование текста */
+        }
+
+        /* Заголовок */
+        h1 {
+            font-size: 20px;
+            color: #333; /* Тёмно-серый цвет */
+            margin-bottom: 20px; /* Отступ снизу */
+        }
+
+        /* Поле ввода названия */
+        #title {
+            display: block;
+            width: 369px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd; /* Светло-серая граница */
+            border-radius: 8px; /* Скругленные углы */
+            background-color: #fff; /* Белый фон */
+        }
+
+        /* Общие стили для выпадающих списков */
+        .select-field {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            appearance: none; /* Убираем стандартное оформление браузера */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238e8eb9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center; /* Размещаем стрелку справа */
+            background-size: 10px;
+        }
+
+        /* Блок для загрузки фотографий */
+        .photo-section {
+            margin-bottom: 20px;
+        }
+
+        /* Подпись для загрузки фотографий */
+        .photo-label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Контейнер для фотографий */
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* Элемент загруженного фото */
+        .photo-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            position: relative;
+            background-color: #fafafa;
+        }
+
+        /* Фото внутри блока */
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Кнопка удаления фото */
+        .photo-item button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: red;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Кнопка загрузки фото */
+        .upload-box {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            background-color: #fafafa;
+        }
+
+        /* Кнопка сохранения */
+        button.submit {
+            width: 100%;
+            padding: 12px;
+            background: #65558f; /* Фиолетовый цвет */
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Отключенная кнопка сохранения */
+        button.submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Кнопка назад */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #65558f;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .back-button:hover {
+            color: #57497a;
+        }
